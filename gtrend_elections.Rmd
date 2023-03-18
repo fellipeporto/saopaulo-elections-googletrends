@@ -1,5 +1,5 @@
 ---
-title: "Homework 4"
+title: "Google Trends e Eleições Municipais - 2020"
 author: "Fellipe Porto"
 date: "30/10/2020"
 output: html_document
