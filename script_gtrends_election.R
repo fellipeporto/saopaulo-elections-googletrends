@@ -1,4 +1,4 @@
-funçao_grafico <-function(candidato){
+funÃ§ao_grafico <-function(candidato){
   data<-gtrends(c(candidato), time= "2020-01-01 2020-10-30", geo = "BR")
   time_trend<-data$interest_over_time %>%
     mutate(hits=ifelse(hits=="<1",0.5,hits),
@@ -17,7 +17,7 @@ funçao_grafico <-function(candidato){
   return(plot)
 }
 
-andrea_plot <- funçao_grafico(candidato = 'andrea matarazzo')
+andrea_plot <- funÃ§ao_grafico(candidato = 'andrea matarazzo')
 andrea_plot
   
 
@@ -31,7 +31,7 @@ boulos__plot <- grafico(candidato = 'guilherme boulos')
 tatto__plot <- grafico(candidato = 'jilmar tatto')
 joice_plot <- grafico(candidato = 'joice hasselmann')
 levy_plot <- grafico(candidato = 'levy fidelix')
-marcio_plot <- grafico(candidato = 'marcio frança')
+marcio_plot <- grafico(candidato = 'marcio franÃ§a')
 helou_plot <- grafico(candidato = 'marina helou')
 orlando_plot <- grafico(candidato = 'orlando silva')
 vera_plot <- grafico(candidato = 'vera lucia')
@@ -49,12 +49,12 @@ vera_plot <- grafico(candidato = 'vera lucia')
   (helou_plot)+
   (orlando_plot)+
   (vera_plot)+
-  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em São Paulo', 
+  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em SÃ£o Paulo', 
                   caption = '')
 
 
 teste <-function(candidato){
-  data<-gtrends(c(candidato), time= "2020-01-01 2020-10-30", geo = "BR-SP-São Paulo - SP")
+  data<-gtrends(c(candidato), time= "2020-01-01 2020-10-30", geo = "BR-SP-SÃ£o Paulo - SP")
   time_trend<-data$interest_over_time %>%
     mutate(hits=ifelse(hits=="<1",0.5,hits),
            date=as.Date(date),
@@ -78,11 +78,11 @@ teste <-function(candidato){
   (antonio_plot) +
   (arthur_plot) +
   (covas_plot) +
-  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em São Paulo')
+  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em SÃ£o Paulo')
 
 (andrea_plot)+ (antonio_plot)+
-  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em São Paulo',
-                  caption = 'Dados obtidos atrvés do pacote gtrendsR, entre os dias 01-01-2020 e 30-10-2020',
+  plot_annotation(title = 'Frequencia de pesquisas no Google dos candidatos a prefeito em SÃ£o Paulo',
+                  caption = 'Dados obtidos atrvÃ©s do pacote gtrendsR, entre os dias 01-01-2020 e 30-10-2020',
                   tag_levels = 1,
                   tag_prefix = 'a')
     
@@ -102,15 +102,6 @@ getOption('max.print')
 View(countries)
 
 ###########
-
-
-testefla <- gtrends('flamengo', geo = 'BR-SP-São Paulo', time = '2020-10-01 2020-11-01')
-plot(testefla)
-
-testefla2 <- gtrends('flamengo', geo = 'BR-SP-SP', time = '2020-10-01 2020-11-01')
-
-
-rm(testplot)
 
 testplot <-function(candidato){
   data<-gtrends(c(candidato), time= "'2020-01-01 2020-10-30", geo = "BR-SP")
@@ -133,7 +124,7 @@ testplot <-function(candidato){
 
 p1 <- testplot(candidato = 'prefeito')
 
-p2 <- testplot(candidato = 'filipe sabará')
+p2 <- testplot(candidato = 'filipe sabarÃ¡')
 p2
 
 library(dplyr)
