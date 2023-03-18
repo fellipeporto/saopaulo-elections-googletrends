@@ -1,0 +1,294 @@
+---
+title: "Homework 4"
+author: "Fellipe Porto"
+date: "30/10/2020"
+output: html_document
+---
+
+````{r}
+setwd('C:/Users/Fellipe Porto/Documents/estudoR/covid19_R/homework4_gtrendsR')
+
+# pacotes
+
+library(tidyverse)
+library(gtrendsR)
+library(patchwork)
+
+````
+
+
+# Questão 1
+
+##### I - Analisando a frequência de pesquisas no Google dos candidatos a prefeito da cidade de São Paulo.
+
+A intenção de fazer essa análise a partir dos candidatos à prefeito de São Paulo
+vai de encontro às discussões que estão ocorrendo na Ciência Política sobre o papel da internet nas campanhas eleitorais, o que vem sendo chamado de datificação da política. O objetivo dessa proposta é analisar como o início das campanhas, as propagandas eleitorais e o Horário Gratuito de Propaganda Eleitoral (HGPE) influenciaram no interesse do eleitorado nos candidatos. 
+
+A começar por quando as pesquisas pela palavra "prefeito" mais se acentuaram no ano de 2020. 
+
+````{r}
+prefeito_plot <- function(candidato){
+  data<-gtrends(c(candidato), time= "2020-01-01 2020-10-30", geo = "BR-SP")
+  time_trend<-data$interest_over_time %>%
+    mutate(hits=ifelse(hits=="<1",0.5,hits),
+           date=as.Date(date),
+           keyword=factor(keyword, levels = candidato))
+  plot<-ggplot(data=time_trend, aes(x=date, y=as.numeric(hits), colour=keyword)) +
+    geom_line() +
+    geom_vline(xintercept = as.numeric(as.Date("2020-09-01")))+
+    geom_vline(xintercept = as.numeric(as.Date("2020-09-26")))+
+    theme_bw() +
+    scale_y_continuous(breaks = NULL) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text=element_text(size=10),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  return(plot)
+}
+
+
+prefeito <- prefeito_plot(candidato = 'prefeito')
+prefeito +
+  plot_annotation(title = 'Frequência de pesquisas no Google da palavra "Prefeito" ',
+                  caption = 'Dados obtidos através do pacote gtrendsR, entre os dias 01-01-2020 e 30-10-2020')
+  
+
+
+````
+
+É possível observar que o aumento das pesquisas da palavra "prefeito" aumentaram a partir de setembro, e tiveram seu pico a partir do dia 26-09, quando iniciou as propagandas eleitorais. 
+
+Agora irei analisar o desempenho nas pesquisas de cada candidato a prefeitura de São Paulo. 
+
+````{r}
+# função para os gráficos 
+grafico <-function(candidato){
+  data<-gtrends(c(candidato), time= "2020-01-01 2020-10-30", geo = "BR-SP")
+  time_trend<-data$interest_over_time %>%
+    mutate(hits=ifelse(hits=="<1",0.5,hits),
+           date=as.Date(date),
+           keyword=factor(keyword, levels = candidato))
+  plot<-ggplot(data=time_trend, aes(x=date, y=as.numeric(hits), colour=keyword)) +
+    geom_line() +
+    geom_vline(xintercept = as.numeric(as.Date("2020-09-26"))) +
+    theme_bw() +
+    scale_y_continuous(breaks = NULL) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text=element_text(size=10),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  return(plot)
+}
+
+
+andrea_plot <- grafico(candidato = 'andrea matarazzo')
+antonio_plot <- grafico(candidato = 'antônio carlos')
+arthur_plot <- grafico(candidato = 'arthur do val')
+covas_plot <- grafico(candidato = 'bruno covas')
+celso__plot <- grafico(candidato = 'celso russomanno')
+boulos__plot <- grafico(candidato = 'guilherme boulos')
+tatto__plot <- grafico(candidato = 'jilmar tatto')
+joice_plot <- grafico(candidato = 'joice hasselmann')
+levy_plot <- grafico(candidato = 'levy fidelix')
+marcio_plot <- grafico(candidato = 'marcio frança')
+helou_plot <- grafico(candidato = 'marina helou')
+orlando_plot <- grafico(candidato = 'orlando silva')
+vera_plot <- grafico(candidato = 'vera lucia')
+
+(andrea_plot) +
+  (antonio_plot) +
+  (arthur_plot) +
+  (covas_plot) +
+  (celso__plot) +
+  (boulos__plot) +
+  (tatto__plot)+
+  (joice_plot)+
+  (levy_plot)+
+  (marcio_plot)+
+  (helou_plot)+
+  (orlando_plot)+
+  (vera_plot)+
+  plot_annotation(title = 'Frequência de pesquisas no Google dos candidatos a prefeito em São Paulo',
+                  caption = 'Dados obtidos através do pacote gtrendsR, entre os dias 01-01-2020 e 30-10-2020')
+
+
+
+
+
+
+````
+
+Há uma significativa mudança da frequência das pesquisas a partir do dia 26-09, dia em que se iniciou as campanhas eleitorais. Porém, como alguns candidatos já eram políticos eleitos de eleições passadas e outros conhecidos por conta da mídia tradicional, há bastante ruído nos gráficos que impedem de perceber o real impacto do ínicio das campanhas. 
+
+Como uma forma de entender melhor o comportamento da frequência após o início da campanha, irei diminuir o período de análise, iniciando em setembro de 2020.
+
+````{r}
+grafico2 <-function(candidato){
+  data<-gtrends(c(candidato), time= "2020-09-01 2020-10-30", geo = "BR-SP")
+  time_trend<-data$interest_over_time %>%
+    mutate(hits=ifelse(hits=="<1",0.5,hits),
+           date=as.Date(date),
+           keyword=factor(keyword, levels = candidato))
+  plot<-ggplot(data=time_trend, aes(x=date, y=as.numeric(hits), colour=keyword)) +
+    geom_line() +
+    geom_vline(xintercept = as.numeric(as.Date("2020-09-26"))) +
+    theme_bw() +
+    scale_y_continuous(breaks = NULL) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text=element_text(size=10),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  return(plot)
+}
+
+andrea_plot2 <- grafico2(candidato = 'andrea matarazzo')
+antonio_plot2 <- grafico2(candidato = 'antônio carlos')
+arthur_plot2 <- grafico2(candidato = 'arthur do val')
+covas_plot2 <- grafico2(candidato = 'bruno covas')
+celso__plot2 <- grafico2(candidato = 'celso russomanno')
+boulos__plot2 <- grafico2(candidato = 'guilherme boulos')
+tatto__plot2 <- grafico2(candidato = 'jilmar tatto')
+joice_plot2 <- grafico2(candidato = 'joice hasselmann')
+levy_plot2 <- grafico2(candidato = 'levy fidelix')
+marcio_plot2 <- grafico2(candidato = 'marcio frança')
+helou_plot2 <- grafico2(candidato = 'marina helou')
+orlando_plot2 <- grafico2(candidato = 'orlando silva')
+vera_plot2 <- grafico2(candidato = 'vera lucia')
+
+andrea_plot2+
+  antonio_plot2+
+  arthur_plot2+
+  covas_plot2+
+  celso__plot2+
+  boulos__plot2+
+  tatto__plot2+
+  joice_plot2+
+  levy_plot2+
+  marcio_plot2+
+  helou_plot2+
+  orlando_plot2+
+  vera_plot2+
+   plot_annotation(title = 'Frequência de pesquisas no Google dos candidatos a prefeito em São Paulo',
+                  caption = 'Dados obtidos através do pacote gtrendsR, entre os dias 01-09-2020 e 30-10-2020')
+
+````
+
+Nitidamente há uma mudança na frequência causada  pelo início da propaganda eleitoral, no dia 26-09, que é o momento que o eleitorado passa a conhecer de forma efetiva os candidato, mesmo daqueles que já eram políticos eleitos.  
+
+É conhecido que as primeiras e as últimas semanas da campanha eleitoral tradicional (rádio, TV) são as mais importantes por conta do [comportamento da audiência durante o HGPE](https://www.scielo.br/scielo.php?pid=S0104-62762011000100004&script=sci_arttext&tlng=pt): há um aumento na audiência nos momentos iniciais, que ao decorrer dos dias vai se perdendo, mas que retorna quando se aproxima o dia da votação. Mas como esse interesse pelo eleitorado ocorre na internet? Ainda faltam duas semanas para as votações do primeiro turno, o mais correto seria esperar o fim das eleições para tentar observar esse fenômeno, mas, para fins dessa atividade isso não é um problema tão grande e talvez já seja possível perceber se há ou não um comportamento parecido do eleitorado no meio digital. Para isso, o próximo gráfico terá como data de partida o início das propagandas eleitorais. 
+
+````{r}
+
+grafico3 <-function(candidato){
+  data<-gtrends(c(candidato), time= "2020-09-26 2020-10-30", geo = "BR-SP")
+  time_trend<-data$interest_over_time %>%
+    mutate(hits=ifelse(hits=="<1",0.5,hits),
+           date=as.Date(date),
+           keyword=factor(keyword, levels = candidato))
+  plot<-ggplot(data=time_trend, aes(x=date, y=as.numeric(hits), colour=keyword)) +
+    geom_line() +
+    theme_bw() +
+    scale_y_continuous(breaks = NULL) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text=element_text(size=10),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  return(plot)
+}
+
+andrea_plot3 <- grafico3(candidato = 'andrea matarazzo')
+antonio_plot3 <- grafico3(candidato = 'antônio carlos')
+arthur_plot3 <- grafico3(candidato = 'arthur do val')
+covas__plot3 <- grafico3(candidato = 'bruno covas')
+celso_plot3 <- grafico3(candidato = 'celso russomanno')
+boulos_plot3 <- grafico3(candidato = 'guilherme boulos')
+tatto_plot3 <- grafico3(candidato = 'jilmar tatto')
+joice_plot3 <- grafico3(candidato = 'joice hasselmann')
+levy_plot3 <- grafico3(candidato = 'levy fidelix')
+marcio_plot3 <- grafico3(candidato = 'marcio frança')
+helou_plot3 <- grafico3(candidato = 'marina helou')
+orlando_plot3 <- grafico3(candidato = 'orlando silva')
+vera_plot3 <- grafico3(candidato = 'vera lucia')
+
+andrea_plot3+
+  antonio_plot3+
+  arthur_plot3+
+  covas__plot3+
+  celso_plot3+
+  boulos_plot3+
+  tatto_plot3+
+  joice_plot3+
+  levy_plot3+
+  marcio_plot3+
+  helou_plot3+
+  orlando_plot3+
+  vera_plot3+
+  plot_annotation(title = 'Frequência de pesquisas no Google dos candidatos a prefeito em São Paulo',
+                  caption = 'Dados obtidos através do pacote gtrendsR, entre os dias 26-09-2020 e 30-10-2020')
+  
+
+````
+
+Não fica muito claro se o comportamento é diferente, ou se o fato de não termos um período mais significativo para observar que nos impede de perceber o comportamento. Mas uma coisa é evidente: todos tiveram um pico bastante agudo, bem próximo ao início da campanha, mas seu principal fator foi a ocorrência de um debate no dia 01-10, como ficará marcado no gráfico seguinte. 
+
+````{r}
+grafico4 <- function(candidato){
+  data<-gtrends(c(candidato), time= "2020-09-26 2020-10-30", geo = "BR-SP")
+  time_trend<-data$interest_over_time %>%
+    mutate(hits=ifelse(hits=="<1",0.5,hits),
+           date=as.Date(date),
+           keyword=factor(keyword, levels = candidato))
+  plot<-ggplot(data=time_trend, aes(x=date, y=as.numeric(hits), colour=keyword)) +
+    geom_line() +
+    geom_vline(xintercept = as.numeric(as.Date("2020-10-01"))) +
+    theme_bw() +
+    scale_y_continuous(breaks = NULL) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text=element_text(size=10),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  return(plot)
+}
+
+andrea_plot4 <- grafico4(candidato = 'andrea matarazzo')
+antonio_plot4 <- grafico4(candidato = 'antônio carlos')
+arthur_plot4 <- grafico4(candidato = 'arthur do val')
+covas__plot4 <- grafico4(candidato = 'bruno covas')
+celso_plot4 <- grafico4(candidato = 'celso russomanno')
+boulos_plot4 <- grafico4(candidato = 'guilherme boulos')
+tatto_plot4 <- grafico4(candidato = 'jilmar tatto')
+joice_plot4 <- grafico4(candidato = 'joice hasselmann')
+levy_plot4 <- grafico4(candidato = 'levy fidelix')
+marcio_plot4 <- grafico4(candidato = 'marcio frança')
+helou_plot4 <- grafico4(candidato = 'marina helou')
+orlando_plot4 <- grafico4(candidato = 'orlando silva')
+vera_plot4 <- grafico4(candidato = 'vera lucia')
+
+andrea_plot4+
+  antonio_plot4+
+  arthur_plot4+
+  covas__plot4+
+  celso_plot4+
+  boulos_plot4+
+  tatto_plot4+
+  joice_plot4+
+  levy_plot4+
+  marcio_plot4+
+  helou_plot4+
+  orlando_plot4+
+  vera_plot4+
+  plot_annotation(title = 'Frequência de pesquisas no Google dos candidatos a prefeito em São Paulo',
+                  caption = 'Dados obtidos através do pacote gtrendsR, entre os dias 26-09-2020 e 30-10-2020')
+  
+````
+
+
+Interessante observar que os candidatos que não participaram do debate, Vera Lúcia e Antônio Carlos, tiveram uma queda na frequência. 
+
+
+
